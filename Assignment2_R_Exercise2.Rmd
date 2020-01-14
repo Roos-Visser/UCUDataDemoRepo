@@ -1,0 +1,54 @@
+---
+title: "Movies 2000s taken into account ratings"
+output: html_notebook
+---
+
+The research question in excercise 1 was ‘Do movies from the 2000s with a higher budget also have a higher revenue?’. We now want to investigate whether adding the rating of the movie influences the answer to that research question. This leaves us with the new research question ‘Do movies from the 2000s with a higher budget also have a higher revenue when taking into account their rating?’. The variables looked at in order to answer this research question are ‘decade’, ‘revenue’, ‘budget’, and ‘vote_average’. For the variable ‘vote_average’ we will look at whether the average voter rating is higher than 7 or lower than/equal to 7.
+
+```{r}
+library('tidyverse')
+```
+
+```{r}
+# Upload dataset
+
+movies <- read_csv('movies.csv')
+```
+
+Since only the relationship between budget and revenue in the 2000s is to be evaluated, the variable decade has to be filtered. The dataset thus needs to be filtered for 2000s movies, after which a selection of the necessary variables should be executed. 
+
+```{r}
+# Selection necessary data
+
+movies2000s <- movies %>%
+  filter(decade == '2000s') %>%
+  select(decade, revenue, budget, vote_average)
+```
+
+Since the budget and revenue are big numbers, this will lead to a scientific notation on the axes of the to be created graph. This is impractical and makes the graph less clear. Therefore, we need the manipulate the data in order to have the numbers on the axes in millions. Furthermore, the data needs to be divided into low and high ratings. As mentioned, the low ratings will include all ratings lower and including 7, and the high ratings will include those above 7. 
+
+```{r}
+# Manipulation data
+
+movies2000s_inmillions <- movies2000s %>%
+  mutate(budget_in_millions = budget/1000000,
+          revenue_in_millions = revenue/1000000
+  )
+
+movies2000s_inmillions_ratings <- movies2000s_inmillions %>%
+  mutate(rating = vote_average <= 7, 
+         rating = ifelse(rating, 'low', 'high')
+  )
+```
+
+Finally, in order to visualise the data, a scatterplot will be used. This scatterplot will show the relationship between the budget and revenue of 2000s movies, with the amounts on the axes in millions of dollars. 
+
+```{r}
+# Create graph
+
+ggplot(data=movies2000s_inmillions_ratings) +
+  geom_point(mapping=aes(x=budget_in_millions, y=revenue_in_millions, colour=rating)) +
+  xlab('Movie Budget (in millions of $)') +
+  ylab('Movie Revenue (in millions of $)') +
+  ggtitle('Relationship Budget and Revenue Movies 2000s')
+```
