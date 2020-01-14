@@ -52,3 +52,5 @@ ggplot(data=movies2000s_inmillions_ratings) +
   ylab('Movie Revenue (in millions of $)') +
   ggtitle('Relationship Budget and Revenue Movies 2000s')
 ```
+
+had to make some change
