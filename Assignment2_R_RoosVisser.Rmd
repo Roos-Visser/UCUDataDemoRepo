@@ -1,0 +1,51 @@
+---
+title: "Movies 2000s"
+output: html_notebook
+---
+
+The research question to be answered is 'Do movies from the 2000s with a higher budget also have a higher revenue?'. The variables that will have to be looked at in order to answer this research question are 'decade', 'budget', and 'revenue'. The results will then be visualised in a scatterplot graph in order to create a clear overview of the relationship between a movie's budget and revenue in the 2000s.  
+
+```{r}
+library('tidyverse')
+```
+
+```{r}
+# Upload dataset
+
+movies <- read_csv('movies.csv')
+```
+
+Since only the relationship between budget and revenue in the 2000s is to be evaluated, the variable decade has to be filtered. The dataset thus needs to be filtered for 2000s movies, after which a selection of the necessary variables should be executed. 
+
+```{r}
+# Selection necessary data
+
+movies2000s <- movies %>%
+  filter(decade == '2000s') %>%
+  select(decade, revenue, budget)
+```
+
+Since the budget and revenue are big numbers, this will lead to a scientific notation on the axes of the to be created graph. This is impractical and makes the graph less clear. Therefore, we need the manipulate the data in order to have the numbers on the axes in millions.
+
+```{r}
+# Manipulation data
+
+movies2000s_inmillions <- movies2000s %>%
+  mutate(budget_in_millions = budget/1000000,
+          revenue_in_millions = revenue/1000000
+  )
+```
+
+Finally, in order to visualise the data, a scatterplot will be used. This scatterplot will show the relationship between the budget and revenue of 2000s movies, with the amounts on the axes in millions of dollars. 
+
+```{r}
+# Create graph
+
+ggplot(data=movies2000s_inmillions) +
+  geom_point(mapping=aes(x=budget_in_millions, y=revenue_in_millions), colour='purple') +
+  xlab('Movie Budget (in millions of $)') +
+  ylab('Movie Revenue (in millions of $)') +
+  ggtitle('Relationship Budget and Revenue Movies 2000s')
+```
+The scatterplot shows that generally a higher budget for a movie in the 2000s indeed is related to a higher revenue for that movie. 
+
